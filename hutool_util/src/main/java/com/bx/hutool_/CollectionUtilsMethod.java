@@ -4,7 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
+import org.apache.commons.lang3.math.NumberUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,5 +56,33 @@ public class CollectionUtilsMethod {
         list.removeIf(name -> name.equals("2"));//原生
         CollUtil.removeAny(list, "2");//工具类
         System.out.println(list);
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("单位","");//为空转为String
+        hashMap.put("净重 （千克)","");//转为Double
+        hashMap.put("序号","");//转为Integer
+        hashMap.put("总值 （美元)",null);//转为BigDecimal
+
+        DecList decList = new DecList();
+        String unit = MapUtil.getStr(hashMap, "单位");
+        System.out.println("unit.toString() = " + unit.toString());
+        decList.setgUnit(unit);
+
+        Double weight = NumberUtils.toDouble(MapUtil.getStr(hashMap, "净重 （千克)"));
+        System.out.println("weight.toString() = " + weight.toString());
+        decList.setgQty(weight);
+
+        Integer no = NumberUtils.toInt(MapUtil.getStr(hashMap, "序号"));
+        System.out.println("no.toString() = " + no.toString());
+        decList.setgNo(no);
+
+
+        //报错java.lang.NumberFormatException: A blank string is not a valid number
+        BigDecimal total = NumberUtils.toScaledBigDecimal(MapUtil.getStr(hashMap, "总值 （美元)"));
+//        BigDecimal total = Convert.toBigDecimal(MapUtil.getStr(hashMap, "总值 （美元)"), BigDecimal.ZERO);
+        System.out.println("total.toString() = " + total.toString());
+        decList.setDeclTotal(total);
+        System.out.println(decList.toString());
+
     }
 }

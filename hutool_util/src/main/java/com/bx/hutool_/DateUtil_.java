@@ -43,11 +43,11 @@ public class DateUtil_ {
         DateTime date = DateUtil.parse("2025-01-09T00:00:00.000+0800");
         System.out.println("字符串解析后的日期时间：" + date);
 
-        String s = new String();
-//        DateTime parse = DateUtil.parse(s);
+        String s =new String();
+//        DateTime parse = DateUtil.parse(s);//java.lang.IllegalArgumentException: Date String must be not blank !
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            Date parse = formatter.parse(s);
+            Date parse = formatter.parse(s);//Unparseable date: ""，" "
             System.out.println("parse = " + parse);
 
             System.out.println("ObjectUtil.isNotEmpty(parse) = " + ObjectUtil.isNotEmpty(parse));
