@@ -6,7 +6,7 @@ import java.util.Optional;
  * @author lili
  * @version 1.0
  * @date 2025/2/5 14:26
- * @description
+ * @description Optional
  */
 public class OptionalMethod {
     public static void main(String[] args) {
@@ -26,7 +26,7 @@ public class OptionalMethod {
 
         String string1 = new String("李四");
 
-        //3.判断optional对象中存在的对象是否不为null，不为null返回true
+        //3.判断optional对象中存储的对象是否不为null，不为null返回true
         boolean present = optional.isPresent();
         System.out.println("present = " + present);
 
@@ -50,7 +50,15 @@ public class OptionalMethod {
          * }
          */
         // 该方法用于取出optional1对象中存储的对象，如果存储的对象为null，则会返回参数
-        String optionalString = optional1.orElse(string1);
+        String optionalString = optional1.orElse("string1");
         System.out.println("optionalString = " + optionalString);
+
+        //总结：
+        //1.创建Optional容器：Optional.empty()
+        //2.创建Optional容器：Optional.ofNullable(string)
+        //3.创建非空Optional容器，参数不能为null：Optional.of(string)
+        //4.判断optional对象中存储的对象是否不为null：optional.isPresent()
+        //5.获取optional对象中存储的对象，前提对象不为null，否则报异常：optional.get()
+        //6.获取出optional1对象中存储的对象，若存储的对象为null，则返回传入的参数：optional1.orElse("string1")
     }
 }

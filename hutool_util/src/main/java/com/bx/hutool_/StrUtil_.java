@@ -26,9 +26,9 @@ public class StrUtil_ {
 
         //6、分割字符串
         String s2 = new String("a,b,c,d");
-        StrUtil.split(s2, ',').forEach(System.out::println);//StrUtil.split(s2, ',')按,分s2字符串
+        StrUtil.split(s2, ',').forEach(System.out::println);//StrUtil.split(s2, ',')按,分割s2字符串
         System.out.println("==================================");
-        StrUtil.split(s2, ',', 3).forEach(System.out::println);//StrUtil.split(s2, ',', 3)按,分割s2最多分成3个
+        StrUtil.split(s2, ',', 3).forEach(System.out::println);//StrUtil.split(s2, ',', 3)按,分割s2，最多分成3个
 
     }
 }
