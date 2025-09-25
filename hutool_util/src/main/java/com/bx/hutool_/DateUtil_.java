@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author lili
@@ -44,14 +45,13 @@ public class DateUtil_ {
         System.out.println("字符串解析后的日期时间：" + date);
 
         String s =new String();
-//        DateTime parse = DateUtil.parse(s);//java.lang.IllegalArgumentException: Date String must be not blank !
+        DateTime parse = DateUtil.parse(s);//java.lang.IllegalArgumentException: Date String must be not blank !
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            Date parse = formatter.parse(s);//Unparseable date: ""，" "
-            System.out.println("parse = " + parse);
-
-            System.out.println("ObjectUtil.isNotEmpty(parse) = " + ObjectUtil.isNotEmpty(parse));
-        } catch (ParseException e) {
+//            Date parse = formatter.parse(s);//Unparseable date: ""，" "
+//            System.out.println("parse = " + parse);
+//            System.out.println("ObjectUtil.isNotEmpty(parse) = " + ObjectUtil.isNotEmpty(parse));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -92,6 +92,21 @@ public class DateUtil_ {
         //一天的开始和结束
         System.out.println("DateUtil.beginOfDay(dateTime) = " + DateUtil.beginOfDay(dateTime));
         System.out.println("DateUtil.endOfDay(dateTime) = " + DateUtil.endOfDay(dateTime));
+
+
+        //时间条件查询
+        Date beginDate = DateUtil.parse("2025-09-16T00:00:00.000+0800", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        Date endDate = DateUtil.parse("2025-09-17T08:00:00.000+0800", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        long daysDiff = DateUtil.betweenDay(beginDate, endDate, false);
+        if (daysDiff == 1 && DateUtil.hour(endDate, true) == 8) {
+            // 前端选择的是同一天，调整为整天查询
+            endDate = DateUtil.endOfDay(beginDate);
+        } else {
+            endDate = DateUtil.endOfDay(endDate);
+        }
+
+        System.out.println("beginDate = " + beginDate);
+        System.out.println("endDate = " + endDate);
 
     }
 }
