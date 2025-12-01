@@ -1,8 +1,10 @@
 package com.bx.hutool_;
 
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +27,9 @@ public class DateUtil_ {
         String now = DateUtil.now();
         System.out.println("DateUtil.now() = " +now );
 
+        Date date = DateUtil.parse("2025-01-09T00:00:00.000+0800", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        System.out.println("date = " + date);
+
         // 3.format(字符串形式的格式的日期或时间对象)：将日期或时间转成想要的格式
         System.out.println("DateUtil.format(dateTime, \"YYYY/MM/dd\") = " + DateUtil.format(dateTime, "YYYY/MM/dd"));
 
@@ -41,19 +46,19 @@ public class DateUtil_ {
         System.out.println("DateUtil.formatTime(date1) = " + DateUtil.formatTime(date1));
 
         // 7.parse(字符串)：将字符串解析为日期时间
-        DateTime date = DateUtil.parse("2025-01-09T00:00:00.000+0800");
-        System.out.println("字符串解析后的日期时间：" + date);
+        Date time = DateUtil.parse("2025-01-09T00:00:00.000+0800");
+        System.out.println("字符串解析后的日期时间：" + time);
 
-        String s =new String();
-        DateTime parse = DateUtil.parse(s);//java.lang.IllegalArgumentException: Date String must be not blank !
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-//            Date parse = formatter.parse(s);//Unparseable date: ""，" "
-//            System.out.println("parse = " + parse);
-//            System.out.println("ObjectUtil.isNotEmpty(parse) = " + ObjectUtil.isNotEmpty(parse));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        String s =new String();
+//        DateTime parse = DateUtil.parse(s);//java.lang.IllegalArgumentException: Date String must be not blank !
+//        try {
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+////            Date parse = formatter.parse(s);//Unparseable date: ""，" "
+////            System.out.println("parse = " + parse);
+////            System.out.println("ObjectUtil.isNotEmpty(parse) = " + ObjectUtil.isNotEmpty(parse));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         System.out.println("DateUtil.year(dateTime) = " + DateUtil.year(dateTime));
         //获取月份，从0开始
@@ -95,18 +100,30 @@ public class DateUtil_ {
 
 
         //时间条件查询
-        Date beginDate = DateUtil.parse("2025-09-16T00:00:00.000+0800", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        Date endDate = DateUtil.parse("2025-09-17T08:00:00.000+0800", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        long daysDiff = DateUtil.betweenDay(beginDate, endDate, false);
-        if (daysDiff == 1 && DateUtil.hour(endDate, true) == 8) {
-            // 前端选择的是同一天，调整为整天查询
-            endDate = DateUtil.endOfDay(beginDate);
-        } else {
-            endDate = DateUtil.endOfDay(endDate);
+        //1.正常的时间选择器
+        String beginDate = "2025-01-09T00:00:00.000+0800";
+        String endDate = "2025-01-09T00:00:00.000+0800";
+        if (StrUtil.isNotBlank(beginDate) && StrUtil.isNotBlank(endDate)) {
+            beginDate = beginDate.split("T")[0];
+            endDate = endDate.split("T")[0] + " 23:59:59";
+//            builder.and(qInvtXmlShaller.appTime.stringValue().between(beginDate, endDate));
         }
 
-        System.out.println("beginDate = " + beginDate);
-        System.out.println("endDate = " + endDate);
-
+        //2.选择同一天会跨到第二天的时间选择器
+        String beginTime = "2025-01-09T00:00:00.000+0800";
+        String endTime = "2025-01-09T00:00:00.000+0800";
+        if (StrUtil.isNotBlank(beginTime) && StrUtil.isNotBlank(endTime)) {
+            beginTime = beginTime.split("T")[0];
+            endDate = endTime.split("T")[0];
+            String endHour = endTime.split("T")[1];
+            //由于前端有种时间选择器选择同一天时，结束时间是第二天的日期+所处时区小时，所以判断是选择同一天还是相隔2天
+            long dayDiff = DateUtil.between(DateUtil.parseDate(beginTime), DateUtil.parseDate(endDate), DateUnit.DAY);
+            if (dayDiff == 1 && !endHour.startsWith("00:00:00")) {
+                //如果结束日期是第二天，并且结束时间不是00:00:00，则说明选择了同一天，结束日期改为开始日期
+                endDate = beginTime;
+            }
+            endTime = endDate + " 23:59:59";
+//            builder.and(qInvtXmlShaller.appTime.stringValue().between(beginTime, endTime));
+        }
     }
 }

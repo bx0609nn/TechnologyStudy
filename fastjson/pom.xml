@@ -57,6 +57,12 @@
             <artifactId>hutool-all</artifactId>
             <version>5.3.10</version>
         </dependency>
+        <dependency>
+            <groupId>com.bx</groupId>
+            <artifactId>hutool_util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
