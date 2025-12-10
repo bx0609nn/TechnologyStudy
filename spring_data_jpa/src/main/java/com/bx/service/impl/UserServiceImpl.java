@@ -3,9 +3,13 @@ package com.bx.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
+import com.bx.annotation.AutoFill;
+import com.bx.constant.FieldConstant;
+import com.bx.constant.PageConstant;
 import com.bx.dto.UserDto;
 import com.bx.entity.QUser;
 import com.bx.entity.User;
+import com.bx.enumtype.OperationType;
 import com.bx.exception.BsException;
 import com.bx.repository.UserRepository;
 import com.bx.service.UserService;
@@ -44,19 +48,19 @@ public class UserServiceImpl implements UserService {
      * @description 新增用户
      */
     @Override
+    @AutoFill(OperationType.ADD)
     public Long addUser(User user) {
-        User byUser = userRepository.findByUserName(user.getUserName());
-        if (byUser != null) {
-            throw new BsException("用户名重复，请重新输入！");
-        }
+        //校验用户名和密码是否不为空
         if (StrUtil.isBlank(user.getUserName()) || StrUtil.isBlank(user.getPassword())) {
             throw new BsException("用户名和密码不能为空，请重新输入！");
         }
-        if (user.getId() == null) {
-            user.setName(NameUtil.generateName());
-            user.setCreateTime(new Date());
-            user.setUpdateTime(new Date());
+        //校验用户名是否重复
+        boolean flag = userRepository.existsByUserName(user.getUserName());
+        if (flag) {
+            throw new BsException("用户名重复，请重新输入！");
         }
+        //设置默认值
+        user.setName(NameUtil.generateName());
         userRepository.save(user);
         return user.getId();
     }
@@ -82,8 +86,8 @@ public class UserServiceImpl implements UserService {
         QUser qUser = QUser.user;
         BooleanBuilder builder = new BooleanBuilder();
 
-        Integer pageNum = Optional.ofNullable((Integer) map.get("pageNum")).orElse(1);
-        Integer pageSize = Optional.ofNullable((Integer) map.get("pageSize")).orElse(10);
+        Integer pageNum = Optional.ofNullable((Integer) map.get("pageNum")).orElse(PageConstant.PAGENUM);
+        Integer pageSize = Optional.ofNullable((Integer) map.get("pageSize")).orElse(PageConstant.PAGESIZE);
 
         HashMap<String, Object> condition = (HashMap) map.get("condition");
         if (CollUtil.isNotEmpty(condition)) {
@@ -100,13 +104,13 @@ public class UserServiceImpl implements UserService {
             }
             if (StrUtil.isNotBlank(beginDate) && StrUtil.isNotBlank(endDate)) {
                 beginDate = beginDate.split("T")[0];
-                endDate = endDate.split("T")[0] + " 23:59:59";
+                endDate = endDate.split("T")[0] + FieldConstant.END_OF_DAY;
                 builder.and(qUser.createTime.stringValue().between(beginDate, endDate));
             }
         }
         QueryResults<UserDto> results = new JPAQuery<User>(entityManager)
-                .select(Projections.bean(UserDto.class, qUser.id, qUser.userName, qUser.name,
-                        qUser.age, qUser.gender, qUser.email, qUser.phone, qUser.birthday))
+                .select(Projections.bean(UserDto.class, qUser.id, qUser.userName, qUser.name, qUser.age,
+                        qUser.gender, qUser.email, qUser.phone, qUser.birthday, qUser.createTime, qUser.updateTime))
                 .from(qUser)
                 .where(builder)
                 .offset((pageNum - 1) * pageSize)
@@ -114,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 .orderBy(qUser.id.desc())
                 .fetchResults();
 
-        Long count = results.getTotal();
+        long count = results.getTotal();
         long totalPages = (count + pageSize - 1) / pageSize;
 
         HashMap<String, Object> result = new HashMap<>();
@@ -169,13 +173,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public Long updatePassword(HashMap<String, Object> map) {
+        //获取参数
         Long id = Convert.toLong(map.get("id"), null);
         String password = (String) map.get("password");
         String newPassword = (String) map.get("newPassword");
+        //校验参数
         if (id == null || StrUtil.isBlank(password) || StrUtil.isBlank(newPassword)) {
             throw new BsException("参数不能为空，请检查输入的信息");
         }
-        //新密码长度验证
+        //校验新密码长度
         if (newPassword.length() < 6 || newPassword.length() > 24) {
             throw new BsException("新密码长度必须在6-24位之间");
         }

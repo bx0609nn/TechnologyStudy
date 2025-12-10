@@ -2,6 +2,7 @@ package com.bx.repository;
 
 import com.bx.dto.UserDto;
 import com.bx.entity.User;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,26 +21,27 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * 根据用户名查询用户
+     * 根据用户名查询是否存在用户
      */
-    User findByUserName(String userName);
+    boolean existsByUserName(String userName);
 
     /**
      * 根据ID查询用户
      */
-    @Query("select new com.bx.dto.UserDto(u.id, u.userName, u.name, u.age, u.gender, u.email, u.phone, u.birthday) from User u where u.id=:id")
+    @Query("select new com.bx.dto.UserDto(u.id, u.userName, u.name, u.age, u.gender, u.email, u.phone, u.birthday, u.createTime, u.updateTime) from User u where u.id=:id")
     Optional<UserDto> findUserById(@Param("id") Long id);
 
     /**
      * 根据ID查询密码
      */
-    @Query("select password from User where id=:id")
+    @Query("select password from User where id = :id")
     String findPasswordById(@Param("id") Long id);
 
     /**
      * 根据ID修改密码
      */
-    @Query("update User u set u.password = :password, u.updateTime=NOW() where u.id = :id")
     @Modifying
+    @Query("update User set password = :password, updateTime = NOW() where id = :id")
     void updatePasswordById(@Param("password") String password, @Param("id") Long id);
+
 }

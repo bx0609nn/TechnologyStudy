@@ -6,9 +6,17 @@ spring:
     name: spring_data_jpa
 
   datasource:
-    url: jdbc:mysql://localhost:3306/spring_data_jpa?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/spring_data_jpa?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=true
     username: root
     password: 123456
+  # 自动重连
+  autoReconnect: true
+  # 连接超时时间（毫秒）
+  connectTimeout: 3000
+  # 套接字超时时间（毫秒）
+  socketTimeout: 60000
+  # 最大重连次数
+  maxReconnects: 3
 
   jpa:
     database: MySQL
@@ -18,4 +26,8 @@ spring:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 

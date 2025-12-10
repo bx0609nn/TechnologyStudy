@@ -26,6 +26,14 @@ public class NameUtil {
         return PREFIX + timestamp + randomNum;
     }
 
+    /**
+     * 生成学生账户后缀
+     */
+    public static String generateSuffix() {
+        int randomNum = 100000 + random.nextInt(900000);
+        return "_" + randomNum;
+    }
+
     // 测试方法
     public static void main(String[] args) {
         // 生成10个示例用户名

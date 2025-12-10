@@ -1,6 +1,7 @@
 package com.bx.exception.handler;
 
 import com.bx.config.Result;
+import com.bx.constant.MessageConstant;
 import com.bx.exception.BsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,8 +45,8 @@ public class GlobalExceptionHandler extends RuntimeException {
      */
     @ExceptionHandler(Exception.class)
     public Result exception(Exception e) {
-        log.error("请求异常", e);
-        return Result.error("请求异常");
+        log.error(MessageConstant.EXCEPTION, e);
+        return Result.error(MessageConstant.EXCEPTION);
     }
 
     /**
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler extends RuntimeException {
      */
     @ExceptionHandler(Error.class)
     public Result handleError(Error e) {
-        log.error("请求错误", e);
-        return Result.error("系统错误，请联系管理员");
+        log.error(MessageConstant.UNKNOWN_ERROR, e);
+        return Result.error(MessageConstant.UNKNOWN_ERROR + "，请联系管理员");
     }
 }

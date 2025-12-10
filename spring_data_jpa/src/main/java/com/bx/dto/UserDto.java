@@ -24,4 +24,6 @@ public class UserDto {
     private String email;
     private String phone;
     private Date birthday;
+    private Date createTime;
+    private Date updateTime;
 }

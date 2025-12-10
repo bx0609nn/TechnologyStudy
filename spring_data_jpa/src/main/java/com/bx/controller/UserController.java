@@ -1,6 +1,7 @@
 package com.bx.controller;
 
 import com.bx.config.Result;
+import com.bx.constant.MessageConstant;
 import com.bx.dto.UserDto;
 import com.bx.entity.User;
 import com.bx.service.UserService;
@@ -33,9 +34,9 @@ public class UserController {
     @PostMapping("/addUser")
     public Result addUser(@RequestBody User user) {
         Long id = userService.addUser(user);
-        HashMap<String, Long> result = new HashMap<>();
-        result.put("id", id);
-        return Result.success("新增成功", result);
+        HashMap<String, Long> data = new HashMap<>();
+        data.put("id", id);
+        return Result.success(MessageConstant.ADD_SUCCESS, data);
     }
 
     /**
@@ -49,7 +50,7 @@ public class UserController {
     public Result deleteUser(@RequestBody HashMap<String, Long> map) {
         Long id = map.get("id");
         userService.deleteUser(id);
-        return Result.success("删除成功");
+        return Result.success(MessageConstant.DELETING_SUCCESS);
     }
 
     /**
@@ -61,8 +62,8 @@ public class UserController {
      */
     @PostMapping("/getUserList")
     public Result getUserList(@RequestBody HashMap<String, Object> map) {
-        HashMap<String, Object> result = userService.getUserList(map);
-        return Result.success("分页查询成功", result);
+        HashMap<String, Object> data = userService.getUserList(map);
+        return Result.success(MessageConstant.GET_SUCCESS, data);
     }
 
     /**
@@ -76,9 +77,9 @@ public class UserController {
     public Result getUserById(@RequestBody HashMap<String, Long> map) {
         Long id = map.get("id");
         UserDto user = userService.getUserById(id);
-        HashMap<String, UserDto> result = new HashMap<>();
-        result.put("user", user);
-        return Result.success("查询成功", result);
+        HashMap<String, UserDto> data = new HashMap<>();
+        data.put("user", user);
+        return Result.success(MessageConstant.GET_SUCCESS, data);
     }
 
     /**
@@ -91,9 +92,9 @@ public class UserController {
     @PostMapping("/updateUser")
     public Result updateUser(@RequestBody User user) {
         Long id = userService.updateUser(user);
-        HashMap<String, Long> result = new HashMap<>();
-        result.put("id", id);
-        return Result.success("修改成功", result);
+        HashMap<String, Long> data = new HashMap<>();
+        data.put("id", id);
+        return Result.success(MessageConstant.UPDATE_SUCCESS, data);
     }
 
     /**
@@ -106,8 +107,8 @@ public class UserController {
     @PostMapping("/updatePassword")
     public Result updatePassword(@RequestBody HashMap<String, Object> map) {
         Long id = userService.updatePassword(map);
-        HashMap<String, Long> result = new HashMap<>();
-        result.put("id", id);
-        return Result.success("修改密码成功", result);
+        HashMap<String, Long> data = new HashMap<>();
+        data.put("id", id);
+        return Result.success("修改密码成功", data);
     }
 }
