@@ -19,7 +19,7 @@ public class StudentController {
 
     /**
      * @author lili
-     * @date 2025/12/10 16:57
+     * @date 2025/12/9 16:57
      * @param student 学生
      * @return Result 学生ID
      * @description 添加学生
@@ -88,6 +88,19 @@ public class StudentController {
         HashMap<String, Long> data = new HashMap<>();
         data.put("id", id);
         return Result.success(MessageConstant.UPDATE_SUCCESS, data);
+    }
+
+    /**
+     * @author lili
+     * @date 2025/12/12 11:02
+     * @param map 学生ID，账户ID，原密码，新密码
+     * @return Result
+     * @description 修改账户密码
+     */
+    @PostMapping("/updateAccountPassword")
+    public Result updateAccountPassword(@RequestBody HashMap<String, Object> map) {
+        studentService.updateAccountPassword(map);
+        return Result.success("修改密码成功");
     }
 
 }

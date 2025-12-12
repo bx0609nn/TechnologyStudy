@@ -39,5 +39,4 @@ public class Teacher {
     @Column(nullable = false)
     private Date updateTime;
 
-
 }

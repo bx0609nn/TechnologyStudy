@@ -1,24 +1,27 @@
 package com.bx.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.bx.annotation.AutoFill;
 import com.bx.constant.FieldConstant;
 import com.bx.constant.PageConstant;
 import com.bx.constant.StatusConstant;
-import com.bx.entity.Account;
-import com.bx.entity.QStudent;
-import com.bx.entity.Student;
+import com.bx.entity.*;
 import com.bx.enumtype.OperationType;
+import com.bx.exception.BsException;
+import com.bx.repository.AccountRepository;
 import com.bx.repository.StudentRepository;
 import com.bx.service.StudentService;
 import com.bx.utils.NameUtil;
+import com.bx.utils.RelationUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
@@ -30,6 +33,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -122,7 +128,11 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student getStudentById(Long id) {
-        Student student = studentRepository.findById(id).orElse(null);
+        Student student = studentRepository.findById(id).orElseThrow( () -> new RuntimeException("该学生不存在，查询失败！"));
+       Account account = student.getAccount();
+        if (account!= null){
+            account.setPassword(null);
+        }
         return student;
     }
 
@@ -134,9 +144,58 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @AutoFill(OperationType.UPDATE)
     public Long updateStudent(Student student) {
+        Account account = student.getAccount();
+        if (account == null) {
+            throw new BsException("学生账户信息不能为空，修改失败！");
+        }
+        Student byStudent = studentRepository.findById(student.getId()).orElseThrow(() -> new RuntimeException("该学生不存在，修改失败！"));
+        Account byAccount = byStudent.getAccount();
+        if (!byAccount.getId().equals(account.getId())) {
+            throw new BsException("account校验异常，修改失败");
+        }
+
+        //校验关联数据
+        RelationUtil.check()
+                .relation(student.getSubjects(), byStudent.getSubjects(), Subject::getId, "subject")
+                .relation(student.getTeachers(), byStudent.getTeachers(), Teacher::getId, "teacher")
+                .validate();
+
+        account.setPassword(byAccount.getPassword());
         studentRepository.save(student);
         return student.getId();
     }
 
+    /**
+     * @param map 学生ID，账户ID，原密码，新密码
+     * @return void
+     * @description 修改账户密码
+     */
+    @Override
+    @Transactional
+    public void updateAccountPassword(HashMap<String, Object> map) {
+        //获取参数
+        Long id = Convert.toLong(map.get("id"));
+        Long accountId = Convert.toLong(map.get("accountId"));
+        String password = (String) map.get("password");
+        String newPassword = (String) map.get("newPassword");
+        //校验参数
+        if (id == null || accountId == null || StrUtil.isBlank(password) || StrUtil.isBlank(newPassword)) {
+            throw new BsException("参数不能为空，请检查输入的信息");
+        }
+        //校验新密码长度
+        if (newPassword.length() < 6 || newPassword.length() > 24) {
+            throw new BsException("新密码长度必须在6-24位之间");
+        }
+        //校验账户ID和原密码
+        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("该学生不存在，修改失败！"));
+        Account account = student.getAccount();
+        if (!account.getId().equals(accountId)) {
+            throw new BsException("account校验异常，修改失败！");
+        }
+        if (!account.getPassword().equals(password)) {
+            throw new BsException("原密码错误，修改失败！");
+        }
+        accountRepository.updatePasswordById(newPassword, accountId);
+    }
 
 }

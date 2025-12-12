@@ -40,4 +40,11 @@ public interface StudentService {
      * @description 修改学生
      */
     Long updateStudent(Student student);
+
+    /**
+     * @param map 学生ID，账户ID，原密码，新密码
+     * @return void
+     * @description 修改账户密码
+     */
+    void updateAccountPassword(HashMap<String, Object> map);
 }
