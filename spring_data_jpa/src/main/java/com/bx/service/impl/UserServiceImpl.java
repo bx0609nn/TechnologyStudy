@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
                 builder.and(qUser.createTime.stringValue().between(beginDate, endDate));
             }
         }
-        QueryResults<UserDto> results = new JPAQuery<User>(entityManager)
+        QueryResults<UserDto> page = new JPAQuery<User>(entityManager)
                 .select(Projections.bean(UserDto.class, qUser.id, qUser.userName, qUser.name, qUser.age,
                         qUser.gender, qUser.email, qUser.phone, qUser.birthday, qUser.createTime, qUser.updateTime))
                 .from(qUser)
@@ -118,11 +118,11 @@ public class UserServiceImpl implements UserService {
                 .orderBy(qUser.id.desc())
                 .fetchResults();
 
-        long count = results.getTotal();
+        long count = page.getTotal();
         long totalPages = (count + pageSize - 1) / pageSize;
 
         HashMap<String, Object> result = new HashMap<>();
-        result.put("list", results.getResults());
+        result.put("list", page.getResults());
         result.put("totalPages", totalPages);
         result.put("recordCount", count);
         return result;

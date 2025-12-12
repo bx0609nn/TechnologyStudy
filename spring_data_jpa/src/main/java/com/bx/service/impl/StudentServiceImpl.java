@@ -142,6 +142,7 @@ public class StudentServiceImpl implements StudentService {
      * @description 修改学生
      */
     @Override
+    @Transactional
     @AutoFill(OperationType.UPDATE)
     public Long updateStudent(Student student) {
         Account account = student.getAccount();
@@ -187,7 +188,7 @@ public class StudentServiceImpl implements StudentService {
             throw new BsException("新密码长度必须在6-24位之间");
         }
         //校验账户ID和原密码
-        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("该学生不存在，修改失败！"));
+        Student student = studentRepository.findById(id).orElseThrow(() -> new BsException("该学生不存在，修改失败！"));
         Account account = student.getAccount();
         if (!account.getId().equals(accountId)) {
             throw new BsException("account校验异常，修改失败！");

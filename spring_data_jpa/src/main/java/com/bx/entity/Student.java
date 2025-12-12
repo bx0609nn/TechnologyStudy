@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2025/12/9 15:20
  * @description 学生表
  * 学生和账户1:1
- * 学生和科目1:N
+ * 学生和课程1:N
  * 学生和老师N:N
  */
 @Entity
