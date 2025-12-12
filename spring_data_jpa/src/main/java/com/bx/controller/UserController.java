@@ -101,14 +101,12 @@ public class UserController {
      * @author lili
      * @date 2025/12/4 13:48
      * @param map 用户ID,原密码,新密码
-     * @return Result 用户ID
+     * @return Result
      * @description 修改用户密码
      */
     @PostMapping("/updatePassword")
     public Result updatePassword(@RequestBody HashMap<String, Object> map) {
-        Long id = userService.updatePassword(map);
-        HashMap<String, Long> data = new HashMap<>();
-        data.put("id", id);
-        return Result.success("修改密码成功", data);
+        userService.updatePassword(map);
+        return Result.success("修改密码成功");
     }
 }

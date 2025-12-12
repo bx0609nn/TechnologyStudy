@@ -167,12 +167,12 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @param map 用户ID,原密码,新密码
-     * @return Long 用户ID
+     * @return void
      * @description 修改用户密码
      */
     @Transactional
     @Override
-    public Long updatePassword(HashMap<String, Object> map) {
+    public void updatePassword(HashMap<String, Object> map) {
         //获取参数
         Long id = Convert.toLong(map.get("id"), null);
         String password = (String) map.get("password");
@@ -191,7 +191,6 @@ public class UserServiceImpl implements UserService {
             throw new BsException("原密码错误，请重新输入");
         }
         userRepository.updatePasswordById(newPassword, id);
-        return id;
     }
 
 }

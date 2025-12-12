@@ -50,8 +50,8 @@ public interface UserService {
 
     /**
      * @param map 用户ID,原密码,新密码
-     * @return Long 用户ID
+     * @return void
      * @description 修改用户密码
      */
-    Long updatePassword(HashMap<String, Object> map);
+    void updatePassword(HashMap<String, Object> map);
 }
