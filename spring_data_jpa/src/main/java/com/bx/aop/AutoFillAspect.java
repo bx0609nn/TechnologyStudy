@@ -93,7 +93,13 @@ public class AutoFillAspect {
                 setFieldValue(obj, FieldConstant.CREATE_TIME, now);
                 setFieldValue(obj, FieldConstant.UPDATE_TIME, now);
             } else if (operationType == OperationType.UPDATE) {
-                setFieldValue(obj, "updateTime", now);
+                setFieldValue(obj, FieldConstant.UPDATE_TIME, now);
+                // 更新时也可以添加关联对象，所以这种情况下也需要填充创建时间
+                Field createTimeField = clazz.getDeclaredField(FieldConstant.CREATE_TIME);
+                createTimeField.setAccessible(true);
+                if (createTimeField.get(obj) == null) {
+                    setFieldValue(obj, FieldConstant.CREATE_TIME, now);
+                }
             }
             // 2. 递归填充本类中的类对象
             Field[] fields = clazz.getDeclaredFields();
