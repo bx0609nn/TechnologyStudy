@@ -2,10 +2,12 @@ package com.bx.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.bx.annotation.AutoFill;
 import com.bx.constant.FieldConstant;
 import com.bx.constant.PageConstant;
 import com.bx.entity.QSubject;
 import com.bx.entity.Subject;
+import com.bx.enumtype.OperationType;
 import com.bx.repository.SubjectRepository;
 import com.bx.service.SubjectService;
 import com.querydsl.core.BooleanBuilder;
@@ -13,6 +15,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -33,6 +36,7 @@ public class SubjectServiceImpl implements SubjectService {
      * @description 添加课程
      */
     @Override
+    @AutoFill(OperationType.ADD)
     public Long addSubject(Subject subject) {
         subjectRepository.save(subject);
         return subject.getId();
@@ -110,6 +114,7 @@ public class SubjectServiceImpl implements SubjectService {
      * @description 更新课程
      */
     @Override
+    @AutoFill(OperationType.UPDATE)
     public Long updateSubject(Subject subject) {
         subjectRepository.save(subject);
         return subject.getId();

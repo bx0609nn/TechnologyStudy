@@ -2,15 +2,16 @@ package com.bx.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.bx.annotation.AutoFill;
 import com.bx.constant.FieldConstant;
 import com.bx.constant.PageConstant;
 import com.bx.entity.QTeacher;
 import com.bx.entity.Teacher;
+import com.bx.enumtype.OperationType;
 import com.bx.repository.TeacherRepository;
 import com.bx.service.TeacherService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @description 添加教师
      */
     @Override
+    @AutoFill(OperationType.ADD)
     public Long addTeacher(Teacher teacher) {
         teacherRepository.save(teacher);
         return teacher.getId();
@@ -57,7 +59,7 @@ public class TeacherServiceImpl implements TeacherService {
     /**
      * @param map 查询条件
      * @return HashMap<String, Object> 教师列表
-     * @description 查询教师列表
+     * @description 分页查询教师列表
      */
     @Override
     public HashMap<String, Object> getTeacherList(HashMap<String, Object> map) {
@@ -122,6 +124,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @description 更新教师
      */
     @Override
+    @AutoFill(OperationType.UPDATE)
     public Long updateTeacher(Teacher teacher) {
         teacherRepository.save(teacher);
         return teacher.getId();

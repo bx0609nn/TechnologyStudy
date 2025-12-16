@@ -22,7 +22,7 @@ public interface TeacherService {
     /**
      * @param map 查询条件
      * @return HashMap<String, Object> 教师列表
-     * @description 查询教师列表
+     * @description 分页查询教师列表
      */
     HashMap<String, Object> getTeacherList(HashMap<String, Object> map);
 

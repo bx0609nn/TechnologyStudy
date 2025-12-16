@@ -34,7 +34,7 @@ public class AutoFillAspect {
     //前置通知
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) throws Exception {
-        log.info("开始填充...");
+        log.info("开始填充时间字段...");
         //1.获取方法签名
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
