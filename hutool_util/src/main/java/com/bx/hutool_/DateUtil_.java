@@ -3,13 +3,9 @@ package com.bx.hutool_;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * @author lili
@@ -109,21 +105,60 @@ public class DateUtil_ {
 //            builder.and(qInvtXmlShaller.appTime.stringValue().between(beginDate, endDate));
         }
 
-        //2.选择同一天会跨到第二天的时间选择器
+        //2.选择同一天会跨到第二天的时间选择器(字符串)
         String beginTime = "2025-01-09T00:00:00.000+0800";
-        String endTime = "2025-01-09T00:00:00.000+0800";
+        String endTime = "2025-01-10T08:00:00.000+0800";
         if (StrUtil.isNotBlank(beginTime) && StrUtil.isNotBlank(endTime)) {
             beginTime = beginTime.split("T")[0];
-            endDate = endTime.split("T")[0];
-            String endHour = endTime.split("T")[1];
-            //由于前端有种时间选择器选择同一天时，结束时间是第二天的日期+所处时区小时，所以判断是选择同一天还是相隔2天
-            long dayDiff = DateUtil.between(DateUtil.parseDate(beginTime), DateUtil.parseDate(endDate), DateUnit.DAY);
-            if (dayDiff == 1 && !endHour.startsWith("00:00:00")) {
-                //如果结束日期是第二天，并且结束时间不是00:00:00，则说明选择了同一天，结束日期改为开始日期
-                endDate = beginTime;
-            }
-            endTime = endDate + " 23:59:59";
+            endTime = getEndTime(beginTime, endTime);
 //            builder.and(qInvtXmlShaller.appTime.stringValue().between(beginTime, endTime));
         }
+
+        //3.选择同一天会跨到第二天的时间选择器(Date)
+        Date begin= DateUtil.parse(beginTime.split("T")[0]);
+        Date end = getEndTime(begin, endTime);
+        System.out.println("begin = " + begin);
+        System.out.println("end = " + end);
+//        hql.append(" and i.accountingDate BETWEEN ? and ?");
+//        linkedList.add(beginSaveDate);
+//        linkedList.add(endSaveDate);
+    }
+
+
+
+    /**
+     * 获取结束时间
+     * 处理前端时间选择器选择同一天时，结束时间是第二天日期+时区小时的情况
+     *
+     * @param beginTime 开始时间（yyyy-MM-dd HH:mm:ss）
+     * @param endTime 结束时间字符串（yyyy-MM-ddTHH:mm:ss.SSS+时区）
+     * @return Date 结束时间（yyyy-MM-dd HH:mm:ss）
+     */
+    public static Date getEndTime(Date beginTime, String endTime) {
+        String endDate = endTime.split("T")[0];
+        String endHour = endTime.split("T")[1];
+        long dayDiff = DateUtil.between(beginTime, DateUtil.parseDate(endDate), DateUnit.DAY);
+        if (dayDiff == 1 && !endHour.startsWith("00:00:00")) {
+            endDate = beginTime.toString().split(" ")[0];
+        }
+        return DateUtil.parse(endDate + " 23:59:59");
+    }
+
+    /**
+     * 获取结束时间字符串
+     * 处理前端时间选择器选择同一天时，结束时间是第二天日期+时区小时的情况
+     *
+     * @param beginDate 开始日期字符串（yyyy-MM-dd）
+     * @param endTime 结束时间字符串（yyyy-MM-ddTHH:mm:ss.SSS+时区）
+     * @return String 结束时间字符串（yyyy-MM-dd 23:59:59）
+     */
+    public static String getEndTime(String beginDate, String endTime) {
+        String endDate = endTime.split("T")[0];
+        String endHour = endTime.split("T")[1];
+        long dayDiff = DateUtil.between(DateUtil.parseDate(beginDate), DateUtil.parseDate(endDate), DateUnit.DAY);
+        if (dayDiff == 1 && !endHour.startsWith("00:00:00")) {
+            endDate = beginDate;
+        }
+        return endDate + " 23:59:59";
     }
 }

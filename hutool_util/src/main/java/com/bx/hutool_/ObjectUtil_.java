@@ -1,11 +1,6 @@
 package com.bx.hutool_;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.IterUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.bx.entity.Student;
 
 import java.util.*;
@@ -21,13 +16,15 @@ public class ObjectUtil_ {
         //字符串
         String str1 = null;
         String str2 =new String();
-        String str3 = "Hutool";
+        String str3 ="   ";
+        String str4 = "Hutool";
 
 
         // 判断是否为null
         System.out.println(ObjectUtil.isNull(str1));  // true
         System.out.println(ObjectUtil.isNull(str2));  // false
         System.out.println(ObjectUtil.isNull(str3));  // false
+        System.out.println(ObjectUtil.isNull(str4));  // false
 
         // 判断是否为null或者为空对象
 //        public static boolean isEmpty(Object obj) {
@@ -49,6 +46,7 @@ public class ObjectUtil_ {
         System.out.println(ObjectUtil.isEmpty(str1));  // true
         System.out.println(ObjectUtil.isEmpty(str2));  // true，对于不为null的字符串判空的规则是 str3.length() == 0;，所以返回true
         System.out.println(ObjectUtil.isEmpty(str3));  // false
+        System.out.println(ObjectUtil.isEmpty(str4));  // false
 
         //数组
         int[] intArray1 = null;

@@ -128,7 +128,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student getStudentById(Long id) {
-        Student student = studentRepository.findById(id).orElseThrow( () -> new RuntimeException("该学生不存在，查询失败！"));
+        Student student = studentRepository.findById(id).orElseThrow( () -> new BsException("该学生不存在，查询失败！"));
        Account account = student.getAccount();
         if (account!= null){
             account.setPassword(null);
@@ -149,7 +149,7 @@ public class StudentServiceImpl implements StudentService {
         if (account == null) {
             throw new BsException("学生账户信息不能为空，修改失败！");
         }
-        Student byStudent = studentRepository.findById(student.getId()).orElseThrow(() -> new RuntimeException("该学生不存在，修改失败！"));
+        Student byStudent = studentRepository.findById(student.getId()).orElseThrow(() -> new BsException("该学生不存在，修改失败！"));
         Account byAccount = byStudent.getAccount();
         if (!byAccount.getId().equals(account.getId())) {
             throw new BsException("account校验异常，修改失败");
