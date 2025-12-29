@@ -102,20 +102,26 @@ public class DateUtil_ {
         if (StrUtil.isNotBlank(beginDate) && StrUtil.isNotBlank(endDate)) {
             beginDate = beginDate.split("T")[0];
             endDate = endDate.split("T")[0] + " 23:59:59";
+            System.out.println("beginDate = " + beginDate);
+            System.out.println("endDate = " + endDate);
 //            builder.and(qInvtXmlShaller.appTime.stringValue().between(beginDate, endDate));
         }
 
         //2.选择同一天会跨到第二天的时间选择器(字符串)
-        String beginTime = "2025-01-09T00:00:00.000+0800";
-        String endTime = "2025-01-10T08:00:00.000+0800";
+        String beginTime = "2025-01-15T00:00:00.000+0800";
+        String endTime = "2025-01-16T08:00:00.000+0800";
         if (StrUtil.isNotBlank(beginTime) && StrUtil.isNotBlank(endTime)) {
             beginTime = beginTime.split("T")[0];
-            endTime = getEndTime(beginTime, endTime);
+            endTime = getEndTimeStr(beginTime, endTime);
+            System.out.println("beginTime = " + beginTime);
+            System.out.println("endTime = " + endTime);
 //            builder.and(qInvtXmlShaller.appTime.stringValue().between(beginTime, endTime));
         }
 
         //3.选择同一天会跨到第二天的时间选择器(Date)
-        Date begin= DateUtil.parse(beginTime.split("T")[0]);
+        beginTime = "2025-12-28T00:00:00.000+0800";
+        endTime = "2025-12-29T08:00:00.000+0800";
+        Date begin= DateUtil.parseDate(beginTime.split("T")[0]);
         Date end = getEndTime(begin, endTime);
         System.out.println("begin = " + begin);
         System.out.println("end = " + end);
@@ -141,7 +147,7 @@ public class DateUtil_ {
         if (dayDiff == 1 && !endHour.startsWith("00:00:00")) {
             endDate = beginTime.toString().split(" ")[0];
         }
-        return DateUtil.parse(endDate + " 23:59:59");
+        return DateUtil.parseDateTime(endDate + " 23:59:59");
     }
 
     /**
@@ -152,7 +158,7 @@ public class DateUtil_ {
      * @param endTime 结束时间字符串（yyyy-MM-ddTHH:mm:ss.SSS+时区）
      * @return String 结束时间字符串（yyyy-MM-dd 23:59:59）
      */
-    public static String getEndTime(String beginDate, String endTime) {
+    public static String getEndTimeStr(String beginDate, String endTime) {
         String endDate = endTime.split("T")[0];
         String endHour = endTime.split("T")[1];
         long dayDiff = DateUtil.between(DateUtil.parseDate(beginDate), DateUtil.parseDate(endDate), DateUnit.DAY);

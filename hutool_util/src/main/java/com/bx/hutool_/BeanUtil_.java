@@ -27,7 +27,7 @@ public class BeanUtil_ {
         Student mapToBean = BeanUtil.mapToBean(hashMap, Student.class, true);
         System.out.println("mapToBean = " + mapToBean);
 
-        //3.属性拷贝
+        //3.属性拷贝，将student的属性拷贝给studentDto
         StudentDto studentDto = new StudentDto();
         BeanUtil.copyProperties(student, studentDto);
         System.out.println("studentDto = " + studentDto);
