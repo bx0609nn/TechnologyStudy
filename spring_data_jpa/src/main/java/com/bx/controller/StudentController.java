@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 
 @RestController
@@ -25,7 +26,7 @@ public class StudentController {
      * @description 添加学生
      */
     @PostMapping("/addStudent")
-    public Result addStudent(@RequestBody Student student) {
+    public Result addStudent(@RequestBody @Valid Student student) {
         Long id = studentService.addStudent(student);
         HashMap<String, Long> result = new HashMap<>();
         result.put("id", id);
@@ -83,7 +84,7 @@ public class StudentController {
      * @description 修改学生
      */
     @PostMapping("/updateStudent")
-    public Result updateStudent(@RequestBody Student student) {
+    public Result updateStudent(@RequestBody @Valid Student student) {
         Long id = studentService.updateStudent(student);
         HashMap<String, Long> data = new HashMap<>();
         data.put("id", id);
