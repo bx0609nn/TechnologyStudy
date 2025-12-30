@@ -123,7 +123,7 @@ public class StudentServiceImpl implements StudentService {
 
     /**
      * @param id 学生ID
-     * @return Long 学生
+     * @return Student 学生
      * @description 根据ID查询学生
      */
     @Override

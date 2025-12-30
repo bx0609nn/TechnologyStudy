@@ -10,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +23,6 @@ import java.util.List;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends RuntimeException {
-
-    private final View error;
-
-    public GlobalExceptionHandler(View error) {
-        this.error = error;
-    }
 
     /**
      * 业务异常 - 返回自定义的错误消息
