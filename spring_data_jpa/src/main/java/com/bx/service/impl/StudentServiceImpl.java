@@ -152,13 +152,13 @@ public class StudentServiceImpl implements StudentService {
         Student byStudent = studentRepository.findById(student.getId()).orElseThrow(() -> new BsException("该学生不存在，修改失败！"));
         Account byAccount = byStudent.getAccount();
         if (!byAccount.getId().equals(account.getId())) {
-            throw new BsException("account校验异常，修改失败");
+            throw new BsException("账户校验异常，修改失败！");
         }
 
         //校验关联数据
         RelationUtil.check()
-                .relation(student.getSubjects(), byStudent.getSubjects(), Subject::getId, "subject")
-                .relation(student.getTeachers(), byStudent.getTeachers(), Teacher::getId, "teacher")
+                .relation(student.getSubjects(), byStudent.getSubjects(), Subject::getId, "课程")
+                .relation(student.getTeachers(), byStudent.getTeachers(), Teacher::getId, "教师")
                 .validate();
 
         account.setPassword(byAccount.getPassword());
@@ -191,7 +191,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(id).orElseThrow(() -> new BsException("该学生不存在，修改失败！"));
         Account account = student.getAccount();
         if (!account.getId().equals(accountId)) {
-            throw new BsException("account校验异常，修改失败！");
+            throw new BsException("账户校验异常，修改失败！");
         }
         if (!account.getPassword().equals(password)) {
             throw new BsException("原密码错误，修改失败！");

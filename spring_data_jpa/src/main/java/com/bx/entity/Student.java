@@ -5,8 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +35,10 @@ public class Student {
     @Column(nullable = false)
     private String name;
     // 年龄
+    @Range(min = 0, max = 200, message = "年龄必须在0-200之间")
     private Integer age;
     // 性别
+    @Pattern(regexp = "^[男女]$", message = "性别只能为男或女")
     private String gender;
     // 邮箱
     @Column(unique = true)
@@ -48,6 +53,7 @@ public class Student {
     //一对一-------------------------------------------------------------------------------------------------------------
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId", referencedColumnName = "id")
+    @Valid
     private Account account;
 
     //@OneToOne 一对一
@@ -68,6 +74,7 @@ public class Student {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Subject.class)
     @JoinColumn(name = "studentId", referencedColumnName = "id")
     @Fetch(value = FetchMode.SUBSELECT)
+    @Valid
     private List<Subject> subjects;
 
     //@OneToMany：标识一对多关系
@@ -93,6 +100,7 @@ public class Student {
             joinColumns = @JoinColumn(name = "studentId", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "teacherId", referencedColumnName = "id"))
     @Fetch(value = FetchMode.SUBSELECT)
+    @Valid
     private List<Teacher> teachers;
 
     //@ManyToMany：标识多对多关系

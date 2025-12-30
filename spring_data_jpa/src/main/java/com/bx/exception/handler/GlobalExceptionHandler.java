@@ -6,9 +6,14 @@ import com.bx.exception.BsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lili
@@ -19,6 +24,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends RuntimeException {
+
+    private final View error;
+
+    public GlobalExceptionHandler(View error) {
+        this.error = error;
+    }
 
     /**
      * 业务异常 - 返回自定义的错误消息
@@ -38,6 +49,22 @@ public class GlobalExceptionHandler extends RuntimeException {
         String supportedMethods = String.join(", ", e.getSupportedMethods());
         log.error("请求方法不支持：当前方法 {}，支持的方法：{}", e.getMethod(), supportedMethods);
         return Result.error("请求方法不支持");
+    }
+
+    /**
+     * 参数自动校验异常
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result handleValidationException(MethodArgumentNotValidException e) {
+        StringBuilder builder = new StringBuilder();
+        List<String> errorList = new ArrayList<>();
+        e.getBindingResult().getFieldErrors().forEach(error -> {
+            builder.append(error.getDefaultMessage()).append("，");
+            errorList.add(error.getField() + ": " + error.getDefaultMessage());
+        });
+        log.error("参数校验失败：{}", errorList);
+        builder.deleteCharAt(builder.length() - 1);
+        return Result.error(builder.toString());
     }
 
     /**

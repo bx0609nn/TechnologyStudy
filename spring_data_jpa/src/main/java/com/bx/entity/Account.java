@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -33,6 +34,7 @@ public class Account {
     private String password;
     // 权限 0-无任何权限 1-查 2-增 3-改 4-删 5-所有
     @Column(nullable = false)
+    @Pattern(regexp = "^[012345]$", message = "权限标志有误")
     private String role;
     // 创建时间
     @Column(nullable = false)
