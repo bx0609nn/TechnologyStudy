@@ -68,6 +68,9 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void deleteStudent(Long id) {
+        if (id == null) {
+            return;
+        }
         studentRepository.deleteById(id);
     }
 
@@ -128,9 +131,12 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student getStudentById(Long id) {
-        Student student = studentRepository.findById(id).orElseThrow( () -> new BsException("该学生不存在，查询失败！"));
-       Account account = student.getAccount();
-        if (account!= null){
+        if (id == null) {
+            return null;
+        }
+        Student student = studentRepository.findById(id).orElseThrow(() -> new BsException("该学生不存在，查询失败！"));
+        Account account = student.getAccount();
+        if (account != null) {
             account.setPassword(null);
         }
         return student;

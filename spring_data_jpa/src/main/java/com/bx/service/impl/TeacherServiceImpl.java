@@ -53,6 +53,9 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     public void deleteTeacher(Long id) {
+        if (id == null) {
+            return;
+        }
         teacherRepository.deleteById(id);
     }
 
@@ -114,6 +117,9 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     public Teacher getTeacherById(Long id) {
+        if (id == null) {
+            return null;
+        }
         Teacher teacher = teacherRepository.findById(id).orElse(null);
         return teacher;
     }

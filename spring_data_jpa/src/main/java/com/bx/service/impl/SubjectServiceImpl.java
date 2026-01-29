@@ -49,6 +49,9 @@ public class SubjectServiceImpl implements SubjectService {
      */
     @Override
     public void deleteSubject(Long id) {
+        if (id == null) {
+            return;
+        }
         subjectRepository.deleteById(id);
     }
 
@@ -104,6 +107,9 @@ public class SubjectServiceImpl implements SubjectService {
      */
     @Override
     public Subject getSubjectById(Long id) {
+        if (id == null) {
+            return null;
+        }
         Subject subject = subjectRepository.findById(id).orElse(null);
         return subject;
     }

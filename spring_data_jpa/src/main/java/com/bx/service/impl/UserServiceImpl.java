@@ -72,6 +72,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteUser(Long id) {
+        if (id == null) {
+            return;
+        }
         userRepository.deleteById(id);
     }
 
@@ -135,6 +138,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getUserById(Long id) {
+        if (id == null) {
+            return null;
+        }
         UserDto user = userRepository.findUserById(id).orElse(null);
         return user;
     }
