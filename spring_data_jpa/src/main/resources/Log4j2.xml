@@ -1,104 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <Properties>
-        <!--控制台彩色日志格式
-            %style{内容}{颜色} - 自定义颜色
-            %highlight{内容} - 使用系统默认颜色
-            bright - 浅色系
-            注意：在IDEA中需要配置JVM参数：-Dlog4j.skipJansi=false
-        -->
-        <Property name="log.pattern">%style{%d{ISO8601}}{bright,white} %highlight{%-5level} [%style{%t}{bright,blue}] [%style{%c{5.}}{bright,yellow}:%L %style{%M}{bright,Magenta}] %msg%n%style{%throwable}{red}</Property>
-        <!--不带代码行号的日志格式，提高运行效率-->
-        <Property name="log.pattern.noLine">%style{%d{ISO8601}}{bright,white} %highlight{%-5level} [%style{%t}{bright,blue}] [%style{%c{5.}}{bright,yellow}] %msg%n%style{%throwable}{red}</Property>
-        <!--文件日志格式（不带颜色），防止文件中出现乱码-->
-        <Property name="log.pattern.noColor">%d{ISO8601} %-5level [%t] [%c{5.}:%L %M] %msg%n%throwable</Property>
-        <!--日志文件存放目录-->
+        <!--%style{需要加颜色的信息}{写颜色} bright是比较浅的颜色   %highlight{需要使用系统默认颜色的信息}  -->
+        <!--在idea需要在项目配置jvm参数:-Dlog4j.skipJansi=false        %style{%m}{bright,Magenta}  %style{%throwable}{red}-->
+        <Property name="log.pattern">%style{%d{yyyy-MM-dd HH:mm:ss,SSS}}{bright,white} %highlight{%-5level} [%style{%t}{bright,blue}] [%style{%c{5.}}{bright,yellow}:%L %style{%M}{bright,Magenta}] %msg%n%style{%throwable}{red}</Property>
+        <!--不带代码行号输出日志，提高运行效率        -->
+        <Property name="log.pattern.noLine">%style{%d{yyyy-MM-dd HH:mm:ss,SSS}}{bright,white} %highlight{%-5level} [%style{%t}{bright,blue}] [%style{%c{5.}}{bright,yellow}] %msg%n%style{%throwable}{red}</Property>
+        <!--带行号，不带颜色的格式，用于日志文件输出，防止格式乱码        -->
+        <Property name="log.pattern.noColor">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%t] [%c{5.}:%L %M] %msg%n%throwable</Property>
+        <!--日志存放目录        -->
         <Property name="log.path">./log</Property>
-        <!--日志文件编码格式-->
+        <!--日志编码格式        -->
         <Property name="log.charset">UTF-8</Property>
     </Properties>
 
     <appenders>
-        <!--控制台输出appender-->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout charset="${log.charset}" pattern="${log.pattern}"/>
         </Console>
 
-        <!--测试日志文件
-            append="false": 每次启动清空文件重新写入，用于测试
-            append="true": 追加模式，用于生产环境
-        -->
+        <!--append="false" :根据其下日志策略,每次清空文件重新输入日志,用于测试-->
         <File name="TestLogFile" fileName="${log.path}/test.log" append="false">
-            <PatternLayout charset="${log.charset}" pattern="${log.pattern.noColor}"/>
+            <PatternLayout  charset="${log.charset}" pattern="${log.pattern.noColor}"/>
         </File>
 
-        <!--SQL日志专用文件-->
+        <!--输出sql日志文件        -->
         <File name="TestSqlFile" fileName="${log.path}/sql.log" append="false">
-            <PatternLayout charset="${log.charset}" pattern="${log.pattern.noColor}"/>
+            <PatternLayout  charset="${log.charset}" pattern="${log.pattern.noColor}"/>
         </File>
 
     </appenders>
 
     <loggers>
-        <!--根日志记录器，默认INFO级别-->
         <root level="info">
             <appender-ref ref="Console"/>
             <appender-ref ref="TestLogFile"/>
         </root>
 
-        <!--业务代码日志记录器
-            additivity="false": 不向上级logger传递日志，避免重复输出
-        -->
         <Logger name="com.bx" level="INFO" additivity="false">
             <appender-ref ref="Console"/>
             <appender-ref ref="TestLogFile"/>
         </Logger>
 
-        <!--关闭Hibernate原生SQL日志，使用log4jdbc代替-->
-        <Logger name="org.hibernate.SQL" level="OFF" additivity="false">
-            <appender-ref ref="Console"/>
-        </Logger>
-        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="OFF" additivity="false">
-            <appender-ref ref="Console"/>
-        </Logger>
-
-        <!-- ========== log4jdbc日志配置 ========== -->
-
-        <!--记录SQL语句（参数已替换到SQL中）
-            AsyncLogger: 异步记录，提高性能
-            level="INFO": 开启SQL日志
-            additivity="false": 不向上传递，避免重复
-        -->
+        <!--监控sql日志输出 -->
+        <!--AsyncLogger打印异步日志    提高业务执行效率-->
         <AsyncLogger name="jdbc.sqlonly" level="INFO" additivity="false">
             <appender-ref ref="Console" />
             <appender-ref ref="TestSqlFile"/>
         </AsyncLogger>
 
-        <!--记录结果集详细信息，通常关闭（日志量大）-->
         <logger name="jdbc.resultset" level="OFF" additivity="false">
             <appender-ref ref="Console" />
         </logger>
 
-        <!--以表格形式记录结果集
-            需要查看结果集时，改为INFO
-        -->
+        <!--  如想看到表格数据，将OFF改为INFO  -->
         <logger name="jdbc.resultsettable" level="OFF" additivity="false">
             <appender-ref ref="Console" />
         </logger>
 
-        <!--记录数据库连接的打开/关闭信息，通常关闭-->
         <logger name="jdbc.connection" level="OFF" additivity="false">
             <appender-ref ref="Console" />
         </logger>
 
-        <!--记录SQL执行时间统计信息
-            需要性能分析时，改为INFO
-        -->
         <logger name="jdbc.sqltiming" level="OFF" additivity="false">
             <appender-ref ref="Console" />
         </logger>
 
-        <!--记录除ResultSet外的所有JDBC调用，通常关闭（日志量非常大）-->
         <logger name="jdbc.audit" level="OFF" additivity="false">
             <appender-ref ref="Console" />
         </logger>

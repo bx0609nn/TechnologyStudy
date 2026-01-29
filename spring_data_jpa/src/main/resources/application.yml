@@ -19,17 +19,4 @@ spring:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
-logging:
-  level:
-    # 关闭 Hibernate 自带的 SQL 日志
-    org.hibernate.SQL: OFF
-    org.hibernate.type.descriptor.sql.BasicBinder: OFF
-
-    # log4jdbc 日志配置：只开启 sqlonly
-    jdbc.sqlonly: INFO
-    jdbc.sqltiming: OFF
-    jdbc.audit: OFF
-    jdbc.resultset: OFF
-    jdbc.resultsettable: OFF
-    jdbc.connection: OFF
+    open-in-view: true
