@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends RuntimeException {
      */
     @ExceptionHandler(BsException.class)
     public Result handleBsException(BsException e) {
-        log.warn("业务异常：{}", e.getMessage());
+        log.warn("业务异常：{}", e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler extends RuntimeException {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Result handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         String supportedMethods = String.join(", ", e.getSupportedMethods());
-        log.error("请求方法不支持：当前方法 {}，支持的方法：{}", e.getMethod(), supportedMethods);
+        log.warn("请求方法不支持：当前方法 {}，支持的方法：{}", e.getMethod(), supportedMethods);
         return Result.error("请求方法不支持");
     }
 
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler extends RuntimeException {
             builder.append(error.getDefaultMessage()).append("，");
             errorList.add(error.getField() + ": " + error.getDefaultMessage());
         });
-        log.error("参数校验失败：{}", errorList);
+        log.warn("参数校验失败：{}", errorList);
         builder.deleteCharAt(builder.length() - 1);
         return Result.error(builder.toString());
     }
