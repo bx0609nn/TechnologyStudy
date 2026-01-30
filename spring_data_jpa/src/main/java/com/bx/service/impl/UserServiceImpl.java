@@ -156,10 +156,7 @@ public class UserServiceImpl implements UserService {
         if (id == null) {
             throw new BsException("用户不存在，修改失败！");
         }
-        User byUser = userRepository.findById(id).orElse(null);
-        if (byUser == null) {
-            throw new BsException("用户不存在，修改失败！");
-        }
+        User byUser = userRepository.findById(id).orElseThrow(() -> new BsException("用户不存在，修改失败！"));
         byUser.setName(user.getName());
         byUser.setAge(user.getAge());
         byUser.setGender(user.getGender());

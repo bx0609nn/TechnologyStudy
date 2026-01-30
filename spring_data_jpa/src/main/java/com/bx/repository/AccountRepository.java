@@ -13,6 +13,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
      * 根据ID修改密码
      */
     @Modifying
-    @Query("update Account set password = :newPassword, updateTime = NOW() where id = :id")
-    void updatePasswordById(@Param("newPassword") String newPassword, @Param("id") Long id);
+    @Query("update Account set password = :password, updateTime = NOW() where id = :id")
+    void updatePasswordById(@Param("password") String password, @Param("id") Long id);
 }
