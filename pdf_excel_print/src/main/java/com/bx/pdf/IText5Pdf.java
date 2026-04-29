@@ -32,7 +32,7 @@ public class IText5Pdf {
         // 指定页面大小为A4，且自定义页边距(marginLeft、marginRight、marginTop、marginBottom)
         Document document3 =new Document(PageSize.A4,50,50,30,20);
 
-        //1、也可先指定页面的规格，再创建文档
+        //1.1、也可先指定页面的规格，再创建文档
         //1.1.1页面大小
         Rectangle rectangle = new Rectangle(PageSize.A4);
         //1.1.2页面背景颜色
@@ -66,7 +66,7 @@ public class IText5Pdf {
         //参数2：字符编码
         //参数3：是否嵌入字体（true：将字体嵌入 PDF 文件中，使字体在没有安装字体的设备上也能正确显示。 false：不嵌入字体，文件更小，但需要系统支持字体的显示。）
 //        BaseFont baseFont = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
-        BaseFont baseFont = BaseFont.createFont("fonts/simsun.ttc,0", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);//系统字体，其实5.0版以后的iText加入字体还是很方便的。
+        BaseFont baseFont = BaseFont.createFont("fonts/simsun_songti.ttc,0", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);//系统字体，其实5.0版以后的iText加入字体还是很方便的。
 
         //4、添加段落到pdf文档中
         //4.1创建段落内容字体的大小，粗细
