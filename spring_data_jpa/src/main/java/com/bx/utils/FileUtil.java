@@ -6,9 +6,11 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -44,21 +46,35 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     private static final Set<String> video = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("avi mpg mpe mpeg asf wmv mov qt rm mp4 flv m4v webm ogv ogg".split(" "))));
     public static final String SYS_TEMP_DIR = System.getProperty("java.io.tmpdir") + File.separator;
 
-//    @Autowired
-//    private FileProperties fileProperties;
-//
-//    public static String basePath;
-//
-//    @PostConstruct
-//    public void init() {
-//        basePath = fileProperties.getPath().getPath();
-//        checkDir(basePath);
-//    }
-//
-//    public static String getBasePath() {
-//        return basePath;
-//    }
+    @Value("${file.windows-path}")
+    private String windowsPath;
 
+    @Value("${file.linux-path}")
+    private String linuxPath;
+
+    @Value("${file.mac-path}")
+    private String macPath;
+
+    public static String basePath;
+
+    @PostConstruct
+    public void init() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String path;
+        if (os.startsWith("win")) {
+            path = windowsPath;
+        } else if (os.startsWith("mac")) {
+            path = macPath;
+        } else {
+            path = linuxPath;
+        }
+        if (path.endsWith("/") || path.endsWith("\\")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        basePath = path;
+        checkDir(basePath);
+        log.info("文件存储根路径初始化完成: {}", basePath);
+    }
 
     //1.获取文件名：getName(File file)、getName(String filePath)
     //2.获取扩展名，不带"."：extName(File file)、extName(String fileName)、
@@ -253,6 +269,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         String suffix = StrUtil.isBlank(ext) ? "" : "." + ext;
         // 用 UUID 生成唯一文件名，防止生成的临时文件重复
         File file = new File(SYS_TEMP_DIR, IdUtil.simpleUUID() + suffix);
+        file.deleteOnExit();
         try {
             multipartFile.transferTo(file);
         } catch (IOException e) {
@@ -285,6 +302,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             while ((bytesRead = is.read(buffer, 0, len)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
+            file.deleteOnExit();
         } catch (Exception e) {
             log.error("InputStream to File失败: {}", e.getMessage(), e);
             if (file.exists()) {

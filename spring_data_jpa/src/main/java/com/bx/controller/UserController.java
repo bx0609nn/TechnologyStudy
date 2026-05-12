@@ -5,11 +5,17 @@ import com.bx.constant.MessageConstant;
 import com.bx.dto.UserDto;
 import com.bx.entity.User;
 import com.bx.service.UserService;
+import com.bx.utils.ExcelUtil;
+import com.bx.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -108,5 +114,17 @@ public class UserController {
     public Result updatePassword(@RequestBody HashMap<String, Object> map) {
         userService.updatePassword(map);
         return Result.success("修改密码成功");
+    }
+
+    @GetMapping("/exportExcel")
+    public void updatePassword(HttpServletResponse response) throws IOException {
+        //导出表的列名
+        String[] headers = new String[]{"工作单号", "入园核注清单号", "核注清单号", "状态", "客户", "结算单位", "类型", "进出口方式"};
+        //导出表的字段
+        String[] fieldList = new String[]{"workOrderNo", "preDocNo", "clientSeqNo", "review", "custoerCode", "accountUnit", "type", "iEFlag"};
+        ExcelUtil excelUtil = new ExcelUtil(20, "title", headers, fieldList);
+        excelUtil.export("第1页", null);
+        InputStream inputStream = excelUtil.getWorkbook();
+        FileUtil.downloadFileWithInputStream(response, "报表示例.xlsx", inputStream);
     }
 }

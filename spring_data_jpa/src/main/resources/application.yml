@@ -1,22 +1,29 @@
 server:
-  port: 8888
+  port: 8888  # 服务端口号
 
 spring:
   application:
-    name: spring_data_jpa
+    name: spring_data_jpa  # 应用名称
 
   datasource:
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy  # 使用 log4jdbc 驱动代理，用于 SQL 日志记录
+    # JDBC 连接 URL：log4jdbc 代理 MySQL，时区上海，UTF-8 编码，日期零值转 null，允许多语句，启用 SSL
     url: jdbc:log4jdbc:mysql://localhost:3306/spring_data_jpa?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=true
-    username: root
-    password: 123456
+    username: root      # 数据库用户名
+    password: 123456    # 数据库密码
 
   jpa:
-    database: MySQL
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    show-sql: false
+    database: MySQL                                                    # 指定数据库类型为 MySQL
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect       # 使用 MySQL5 InnoDB 方言
+    show-sql: false                                                    # 不在控制台打印 SQL（由 log4jdbc 接管）
     hibernate:
-      ddl-auto: update
+      ddl-auto: update          # 启动时自动根据实体类更新表结构（不删除数据）
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    open-in-view: true
+        # 物理命名策略：使用字段/类的原始名称作为表名和列名（不做驼峰转下划线）
+    open-in-view: true          # 开启 OSIV，允许在 View 层保持 Session 打开（防止懒加载异常，生产环境建议关闭）
+
+file:
+  windows-path: D:/erp/files          # Windows 环境下的文件存储路径
+  linux-path: /data/erp/files         # Linux 环境下的文件存储路径
+  mac-path: /Users/bx/erp/files       # macOS 环境下的文件存储路径
