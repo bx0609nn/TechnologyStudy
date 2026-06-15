@@ -124,7 +124,9 @@ public class UserController {
         String[] fieldList = new String[]{"workOrderNo", "preDocNo", "clientSeqNo", "review", "custoerCode", "accountUnit", "type", "iEFlag"};
         ExcelUtil excelUtil = new ExcelUtil(20, "title", headers, fieldList);
         excelUtil.export("第1页", null);
+        excelUtil.export("第2页", null);
         InputStream inputStream = excelUtil.getWorkbook();
         FileUtil.downloadFileWithInputStream(response, "报表示例.xlsx", inputStream);
+
     }
 }

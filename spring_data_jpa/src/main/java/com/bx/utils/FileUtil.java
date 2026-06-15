@@ -73,7 +73,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         }
         basePath = path;
         checkDir(basePath);
-        log.info("文件存储根路径初始化完成: {}", basePath);
+        log.info("文件存储根路径初始化完成，为 {}", basePath);
     }
 
     //1.获取文件名：getName(File file)、getName(String filePath)
